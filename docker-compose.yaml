@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: fast-api-project
+    build:
+      context: .
+      args:
+        - FOR_DEVELOPMENT=true
+      dockerfile: src/Dockerfile
+    command: bash -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./src:/app
+    env_file:
+      - .env
+    ports:
+      - 4556:8000
+    depends_on:
+      - db
+
+  db:
+    container_name: fa-db
+    image: postgres:13.3
+    env_file:
+      - .env
+    volumes:
+      - psgr-data:/var/lib/postgresql/data
+
+volumes:
+  psgr-data:
+
+networks:
+  default:
+    name: ev-network
