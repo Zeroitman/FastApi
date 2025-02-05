@@ -9,6 +9,11 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.115.8"
 uvicorn = "^0.34.0"
+sqlalchemy = "^2.0.37"
+sqlalchemy-utils = "^0.41.2"
+pydantic-settings = "^2.7.1"
+alembic = "^1.14.1"
+asyncpg = "^0.30.0"
 
 [tool.poetry.plugins."backend.modules"]
 api = "backend.views.router"

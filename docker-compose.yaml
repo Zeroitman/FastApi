@@ -23,6 +23,8 @@ services:
     image: postgres:13.3
     env_file:
       - .env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - psgr-data:/var/lib/postgresql/data
 
@@ -31,4 +33,4 @@ volumes:
 
 networks:
   default:
-    name: ev-network
+    name: fa-network
