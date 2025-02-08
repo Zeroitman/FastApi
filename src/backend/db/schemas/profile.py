@@ -1,8 +1,10 @@
+from typing import Optional
 from pydantic import (
     BaseModel,
     constr,
     Field,
-    EmailStr
+    EmailStr,
+    ConfigDict
 )
 from backend.db.models import LocaleEnum
 
@@ -27,3 +29,15 @@ class ProfileRegister(BaseModel):
     locale: LocaleEnum = Field(...,
         description="Preferred user's locale"
     )
+
+class ProfileSchema(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    id: int
+    phone: str
+    email: Optional[EmailStr] = None
+    first_name: str
+    last_name: str
+    locale: Optional[LocaleEnum]
