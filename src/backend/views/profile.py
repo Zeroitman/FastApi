@@ -1,15 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from backend.authentication.token import check_access_token
 from backend.db.database import get_db
-from fastapi import APIRouter, Depends, Response, Path, HTTPException
+from fastapi import APIRouter, Depends, Response
 from starlette import status
 from backend import services
-
+from backend.db.models import Profile
 
 profile_router = APIRouter()
 
 
 @profile_router.delete(
-    "/{id}/",
+    "/",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         400: {
@@ -23,16 +24,8 @@ profile_router = APIRouter()
     description="Delete a user profile."
 )
 async def delete_profile(
-        id: int = Path(..., title="User ID"),
+        profile: Profile = Depends(check_access_token),
         db: AsyncSession = Depends(get_db),
 ):
-
-    try:
-        await services.profile.remove(db, id=id)
-    except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="These credentials are already occupied!",
-        )
+    await services.profile.remove(db, id=profile.id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
