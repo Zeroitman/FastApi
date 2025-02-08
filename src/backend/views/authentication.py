@@ -1,19 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 from backend import services
 from backend.db.database import get_db
 from backend.db.schemas.profile import ProfileRegister
-from passlib.context import CryptContext
-
-
-# pwd_context stably generates hash of 60 symbols length with this config
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def hashed_password(password):
-    return pwd_context.hash(password)
-
+from backend.db.schemas.token import Token, OAuth2PasswordRequestData
+from backend.authentication.password import hashed_password
 
 auth_routes = APIRouter()
 
@@ -52,3 +44,33 @@ async def register(
     )
 
     return {"id": profile_id}
+
+
+@auth_routes.post(
+    "/token/",
+    response_model=Token,
+    response_description='returns pair of access and refresh token',
+    responses={
+        401: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "You were not authorized!"}
+                }
+            },
+        },
+    }
+)
+async def access_token(
+        auth_data: OAuth2PasswordRequestData = Depends(),
+        db: Session = Depends(get_db),
+):
+    user = await services.profile.authenticate_user(
+        db, auth_data.phone, auth_data.password
+    )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You were not authorized!",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return await services.profile.get_access_refresh_token(user)

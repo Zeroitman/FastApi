@@ -20,6 +20,20 @@ class Settings(BaseSettings):
         default='Asia/Bishkek'
     )
 
+    JWT_SECRET_KEY: str = Field(
+        env='SECRET_KEY',
+        default='a94f6b2d7e183c5a9c12e847d93056ef4b82d7c1f0a3658e5f1b3c29d6a7e'
+    )
+    ALGORITHM: str = 'HS256'
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        env='ACCESS_TOKEN_EXPIRE_MINUTES',
+        default=30
+    )
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = Field(
+        env='REFRESH_TOKEN_EXPIRE_MINUTES',
+        default=1440
+    )
+
     DATE_INPUT_FORMAT: ClassVar[str] = "%Y-%m-%d"
     DATETIME_INPUT_FORMAT: ClassVar[str] = "%Y-%m-%dT%H:%M:%S%z"
 
