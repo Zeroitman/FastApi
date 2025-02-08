@@ -1,4 +1,5 @@
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -16,3 +17,12 @@ class ServiceBase:
             return db_obj
         else:
             return db_obj
+
+    async def remove(self, db: AsyncSession, *, id: int) -> None:
+        result = await db.scalars(
+            select(self.model).where(self.model.id == id)
+        )
+        obj = result.first()
+        await db.delete(obj)
+        await db.commit()
+        return
