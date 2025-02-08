@@ -1,0 +1,29 @@
+from pydantic import (
+    BaseModel,
+    constr,
+    Field,
+    EmailStr
+)
+from backend.db.models import LocaleEnum
+
+
+
+class ProfileRegister(BaseModel):
+    phone: constr(
+        max_length=150,
+        pattern=r'(?:^|\s)996\d*'
+    )
+    password: constr(max_length=80)
+
+    email: EmailStr | None = None
+    first_name: constr(
+        min_length=1,
+        max_length=150
+    )
+    last_name: constr(
+        min_length=2,
+        max_length=150
+    )
+    locale: LocaleEnum = Field(...,
+        description="Preferred user's locale"
+    )
