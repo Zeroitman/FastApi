@@ -41,3 +41,21 @@ class ProfileSchema(BaseModel):
     first_name: str
     last_name: str
     locale: Optional[LocaleEnum]
+
+
+class ProfileEditSchema(BaseModel):
+    first_name: Optional[str] = Field(
+        min_length=1,
+        max_length=150,
+        default=None
+    )
+    last_name: Optional[str] = Field(
+        min_length=2,
+        max_length=150,
+        default=None
+    )
+    email: Optional[EmailStr] = None
+    locale: Optional[LocaleEnum] = Field(
+        default=None,
+        description="Preferred user's locale"
+    )
