@@ -19,6 +19,7 @@ class Settings(BaseSettings):
         env='TIMEZONE',
         default='Asia/Bishkek'
     )
+    COUNT_PER_PAGE_DEFAULT: int = 10
 
     JWT_SECRET_KEY: str = Field(
         env='SECRET_KEY',
