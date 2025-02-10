@@ -7,7 +7,6 @@ class BannerBaseSchema(BaseModel):
     id: int
     image: AnyHttpUrl
     source: AnyUrl | None = None
-    station_ids: List[int]
 
 
 class BannerPaginatedDisplaySchema(PaginationResponseSchema):
