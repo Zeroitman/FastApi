@@ -8,7 +8,7 @@ services:
       args:
         - FOR_DEVELOPMENT=true
       dockerfile: src/Dockerfile
-    command: bash -c "uvicorn backend.asgi:app --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "poetry run alembic upgrade heads && uvicorn backend.asgi:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
       - ./src:/app
     env_file:
