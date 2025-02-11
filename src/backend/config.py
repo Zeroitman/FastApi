@@ -3,8 +3,15 @@ from typing import ClassVar
 from pydantic import (
     AnyHttpUrl,
     Field,
+    BaseModel
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class ServiceConnParams(BaseModel):
+    KEY: str = "default_key"
+    MESSAGE: str = "default_message"
+    URL: str = "http://drf-project:6197"
 
 
 class Settings(BaseSettings):
@@ -52,6 +59,9 @@ class Settings(BaseSettings):
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               "..", ".env")
     )
+
+    # HMAC authentication
+    DRF_CONN: ServiceConnParams = ServiceConnParams()
 
 settings = Settings()
 

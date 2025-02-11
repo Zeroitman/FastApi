@@ -1,3 +1,6 @@
+import hashlib
+import hmac
+from datetime import datetime
 from typing import Dict, Optional
 import requests
 from pydantic import constr
@@ -34,10 +37,28 @@ class APIWrapper:
             print("Error %s" % e)
             return None
 
+    def get_hmac_hash_for_date(
+            self,
+            today: datetime,
+    ):
+        hmac_hash = hmac.new(
+            key=bytes(self.hmac_key, encoding="utf8"),
+            msg=str.encode(
+                self.hmac_message + today.date().strftime(
+                    "%Y-%m-%d"
+                )
+            ),
+            digestmod=hashlib.sha256,
+        ).hexdigest()
+        return hmac_hash
+
     async def get_authenticated(
         self, path, locale: str = "ru", params: Dict = None
     ):
         headers = {
+            "HMAC-Authorization": self.get_hmac_hash_for_date(
+                datetime.utcnow()
+            ),
             "Accept-Language": locale
         }
         response = self.get(path, params=params, headers=headers)

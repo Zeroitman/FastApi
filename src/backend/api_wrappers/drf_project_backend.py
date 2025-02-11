@@ -1,8 +1,11 @@
 from typing import Dict
+from backend.config import settings
 from .base import APIWrapper
 
 
 class DrfProjectBackendAPIWrapper(APIWrapper):
+    hmac_key = settings.DRF_CONN.KEY
+    hmac_message = settings.DRF_CONN.MESSAGE
     url = "http://drf-project:6197"
     PREFIX = "/api/"
     BANNERS_PATH = f"{PREFIX}banners/for-fa-project/"
