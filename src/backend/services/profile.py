@@ -3,11 +3,10 @@ from fastapi.exceptions import HTTPException
 from starlette import status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from backend import authentication
 from backend.config import settings
 from backend.db.models import Profile
 from backend.db.schemas.profile import ProfileRegister
-from backend.authentication.password import verify_password
-from backend.authentication.token import generate_token
 from .base import ServiceBase
 
 
@@ -66,7 +65,7 @@ class ProfileService(ServiceBase):
         access_token_expires = timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
-        access_token, _ = await generate_token(
+        access_token, _ = await authentication.generate_token(
             data={"sub": user.phone, "type": "access"},
             expires_delta=access_token_expires,
             type='access'
@@ -75,7 +74,7 @@ class ProfileService(ServiceBase):
         refresh_token_expires = timedelta(
             minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
         )
-        refresh_token, code = await generate_token(
+        refresh_token, code = await authentication.generate_token(
             data={"sub": user.phone, "type": "refresh"},
             expires_delta=refresh_token_expires,
             type='refresh',

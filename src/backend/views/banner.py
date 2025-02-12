@@ -3,7 +3,7 @@ from backend.db.models import Profile
 from backend.db.schemas.banner import BannerPaginatedDisplaySchema
 from backend import services
 from backend.filters.banner import BannerFilter
-from backend.authentication.token import check_access_token
+from backend.authentication import check_access_token
 
 banner_router = APIRouter()
 

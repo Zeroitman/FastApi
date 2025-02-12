@@ -5,7 +5,7 @@ from backend import services
 from backend.db.database import get_db
 from backend.db.schemas.profile import ProfileRegister
 from backend.db.schemas.token import Token, OAuth2PasswordRequestData
-from backend.authentication.password import hashed_password
+from backend.authentication import hashed_password
 
 auth_routes = APIRouter()
 

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.authentication.token import check_access_token
+from backend.authentication import check_access_token
 from backend.db.database import get_db
 from fastapi import APIRouter, Depends, Response, HTTPException
 from starlette import status
