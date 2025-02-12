@@ -7,7 +7,7 @@ logger = logging.getLogger('Fast-Api-Project')
 
 
 def load_modules(app=None):
-    for ep in entry_points()["backend.modules"]:
+    for ep in entry_points().select(group="backend.modules"):
         logger.info("Loading module: %s", ep.name)
         mod = ep.load()
         if app:

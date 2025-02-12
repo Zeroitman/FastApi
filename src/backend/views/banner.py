@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from backend.db.models import Profile
+from backend.db.models import Profile, LocaleEnum
 from backend.db.schemas.banner import BannerPaginatedDisplaySchema
 from backend import services
 from backend.filters.banner import BannerFilter
@@ -23,9 +23,9 @@ banner_router = APIRouter()
     },
 )
 async def get_banners(
-        profile: Profile = Depends(check_access_token),
+        # profile: Profile = Depends(check_access_token),
         filter_schema: BannerFilter = Depends(),
 ):
     return await services.banners.get_banners(
-        filter_schema, profile.locale
+        filter_schema, LocaleEnum.russian
     )
