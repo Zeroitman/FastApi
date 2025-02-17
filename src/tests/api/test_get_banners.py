@@ -1,10 +1,11 @@
 from unittest import mock
 import pytest
+from tests.base import BaseTestCase, get_access_token_for_user
 from backend.db.schemas.banner import BannerPaginatedDisplaySchema
-from tests.factories import BannerFactory
+from tests.factories import BannerFactory, ProfileFactory
 
 
-class TestGetBannersAPIView:
+class TestGetBannersAPIView(BaseTestCase):
 
     @staticmethod
     def _generate_banners(count):
@@ -17,19 +18,22 @@ class TestGetBannersAPIView:
 
     @mock.patch("backend.services.banners.get_banners")
     @pytest.mark.asyncio
-    async def test_get_banners_success(
+    async def test_get_banners_success_token_provided(
             self,
             mocked_services_layer,
             client, base_url
     ):
+        profile = await ProfileFactory()
+        print(111111111111111111111111111111111111, profile.first_name)
+        token = await get_access_token_for_user(profile)
         banners = self._generate_banners(10)
         expected_banners = BannerPaginatedDisplaySchema(
             items=banners
         ).model_dump(mode='json')
         mocked_services_layer.return_value = expected_banners
         response = await client.get(
-            f"{base_url}/api/banners/",
-            headers={"Authorization": f"bearer du3hrukhf3u4h8tfi3bu"},
+            f"{base_url}/api/v1/banners/",
+            headers={"Authorization": f"bearer {token}"},
         )
         assert response.status_code == 200
         actual_data = response.json()

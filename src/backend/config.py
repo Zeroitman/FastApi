@@ -50,6 +50,16 @@ class Settings(BaseSettings):
         json_schema_extra={'env': 'DATETIME_EXPORT_FORMAT'}
     )
 
+    TESTING: bool = Field(
+        default=False,
+        json_schema_extra={'env': 'TESTING'}
+    )
+
+    # DATABASE CONNECTION PARAMS
+    CONNECTION_POOL: int = Field(env="CONNECTION_POOL", default=5)
+    MAX_OVERFLOW: int = Field(env="MAX_OVERFLOW", default=10)
+    POOL_RECYCLE: int = Field(env='POOL_RECYCLE', default=3600)
+
     POSTGRES_HOST: str = Field(..., json_schema_extra={'env': 'POSTGRES_HOST'})
     POSTGRES_PORT: int = Field(..., json_schema_extra={'env': 'POSTGRES_PORT'})
     DATABASE_NAME: str = Field(..., json_schema_extra={'env': 'DATABASE_NAME'})

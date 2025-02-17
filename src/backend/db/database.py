@@ -1,23 +1,38 @@
-from sqlalchemy.ext.asyncio import (
-    create_async_engine, async_sessionmaker, AsyncAttrs
-)
-from sqlalchemy.orm import DeclarativeBase, declared_attr
-from backend.config import get_db_url
-
+import asyncpg
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.orm import declarative_base
+from backend.config import settings, get_db_url
 
 DATABASE_URL = get_db_url()
-engine = create_async_engine(DATABASE_URL)
-async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+async_engine = create_async_engine(
+    DATABASE_URL,
+    pool_size=settings.CONNECTION_POOL,
+    max_overflow=settings.MAX_OVERFLOW,
+    pool_recycle=settings.POOL_RECYCLE
+)
+async_session = async_sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=async_engine
+)
+
+Base = declarative_base()
 
 
 async def get_db():
-    async with async_session_maker() as session:
+    uri = DATABASE_URL.replace('postgresql+asyncpg', 'postgresql')
+    try:
+        await asyncpg.connect(uri)
+    except asyncpg.InvalidCatalogNameError:
+        sys_conn = await asyncpg.connect(
+            database='template1',
+            user=settings.POSTGRES_USER,
+            host=settings.POSTGRES_HOST,
+            password=settings.POSTGRES_PASSWORD
+        )
+        await sys_conn.execute(
+            f'CREATE DATABASE {settings.DATABASE_NAME} OWNER {settings.POSTGRES_USER}'
+        )
+        await sys_conn.close()
+    async with async_session() as session:
         yield session
-
-
-class Base(AsyncAttrs, DeclarativeBase):
-    __abstract__ = True
-
-    @declared_attr.directive
-    def __tablename__(cls) -> str:
-        return f"{cls.__name__.lower()}s"
