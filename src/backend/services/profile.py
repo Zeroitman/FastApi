@@ -4,6 +4,7 @@ from starlette import status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend import authentication
+from backend.authentication import verify_password
 from backend.config import settings
 from backend.db.models import Profile
 from backend.db.schemas.profile import ProfileRegister
