@@ -1,6 +1,4 @@
 import asyncio
-from unittest import mock
-
 import asyncpg
 import pytest
 import pytest_asyncio
@@ -12,7 +10,6 @@ from sqlalchemy.ext.asyncio import (
 )
 from backend.config import settings
 from backend.db.database import Base
-from backend.db.database import async_engine as main_engine
 from backend.db.database import get_db
 from backend.main import get_app
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,12 +32,10 @@ async def setup_database(database_uri: str):
         )
         await sys_conn.close()
 
-if not settings.TESTING:
-    TEST_DATABASE_URI = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}/{settings.DATABASE_NAME}_test"
-    engine = create_async_engine(TEST_DATABASE_URI)
-    asyncio.run(setup_database(TEST_DATABASE_URI))
-else:
-    engine = main_engine
+
+TEST_DATABASE_URI = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}/{settings.DATABASE_NAME}_test"
+engine = create_async_engine(TEST_DATABASE_URI)
+asyncio.run(setup_database(TEST_DATABASE_URI))
 
 
 async_session = sessionmaker(
@@ -59,7 +54,6 @@ async def override_get_db():
 
 
 app = get_app()
-app.jetstream = mock.AsyncMock()
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(scope="session")

@@ -56,9 +56,17 @@ class Settings(BaseSettings):
     )
 
     # DATABASE CONNECTION PARAMS
-    CONNECTION_POOL: int = Field(env="CONNECTION_POOL", default=5)
-    MAX_OVERFLOW: int = Field(env="MAX_OVERFLOW", default=10)
-    POOL_RECYCLE: int = Field(env='POOL_RECYCLE', default=3600)
+    CONNECTION_POOL: int = Field(
+        default=5, json_schema_extra={'env': 'CONNECTION_POOL'}
+    )
+    MAX_OVERFLOW: int = Field(
+        default=10,
+        json_schema_extra={'env': 'MAX_OVERFLOW'}
+    )
+    POOL_RECYCLE: int = Field(
+        default=3600,
+        json_schema_extra={'env': 'POOL_RECYCLE'}
+    )
 
     POSTGRES_HOST: str = Field(..., json_schema_extra={'env': 'POSTGRES_HOST'})
     POSTGRES_PORT: int = Field(..., json_schema_extra={'env': 'POSTGRES_PORT'})
