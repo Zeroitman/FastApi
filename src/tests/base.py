@@ -2,7 +2,6 @@ import hashlib
 import hmac
 from datetime import datetime, timedelta
 import pytest
-from unittest import mock
 from backend.authentication import generate_token
 from backend.config import settings
 from backend.db.models import Profile
@@ -29,12 +28,6 @@ def get_hmac_hash_for_date(today: datetime) -> str:
 @pytest.mark.usefixtures("class_db", "client", "base_url", "test_db", "clear_tables")
 class BaseTestCase:
 
-    fake_redis = mock.MagicMock()
-
     @staticmethod
     def _get_fields_for_pagination():
         return ["items", "page", "size", "pages", "total"]
-
-    @staticmethod
-    def _get_hmac(time: datetime = datetime.now()):
-        return get_hmac_hash_for_date(time)
