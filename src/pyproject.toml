@@ -32,6 +32,7 @@ factory-boy = "^3.3.3"
 async-factory-boy = "^1.0.1"
 async-asgi-testclient = "^1.4.11"
 httpx = "0.24.1"
+flake8 = "^7.1.2"
 
 [build-system]
 requires = ["poetry-core"]

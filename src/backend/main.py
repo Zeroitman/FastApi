@@ -2,6 +2,7 @@ import logging
 from importlib.metadata import entry_points
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
+from backend.config import settings
 
 logger = logging.getLogger('Fast-Api-Project')
 
@@ -22,7 +23,7 @@ def custom_openapi(app: FastAPI):
     openapi_schema = get_openapi(
         title='development',
         version="1.0.0",
-        description=f"OpenAPI Documentation of the Fast-Api-Project",
+        description=f"OpenAPI Documentation of the {settings.PROJECT_NAME}",
         routes=app.routes,
     )
     openapi_schema["info"]["x-logo"] = {

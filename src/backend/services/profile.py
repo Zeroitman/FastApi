@@ -50,7 +50,6 @@ class ProfileService(ServiceBase):
         user = await self.create(db, obj_in=data)
         return user.id
 
-
     async def authenticate_user(
             self, db: AsyncSession, phone: str, password: str
     ) -> Profile | None:
@@ -60,7 +59,6 @@ class ProfileService(ServiceBase):
         if not verify_password(password, user.password):
             return None
         return user
-
 
     async def get_access_refresh_token(self, user: Profile):
         access_token_expires = timedelta(

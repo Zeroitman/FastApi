@@ -10,7 +10,6 @@ from backend.authentication import hashed_password
 auth_routes = APIRouter()
 
 
-
 @auth_routes.post(
     "/register/",
     status_code=status.HTTP_201_CREATED,

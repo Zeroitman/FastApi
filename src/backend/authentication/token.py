@@ -10,7 +10,6 @@ from backend.db.database import get_db
 from backend.db.schemas.token import TokenType
 
 
-
 async def generate_token(
         data: dict,
         expires_delta: timedelta,
