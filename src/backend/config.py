@@ -1,10 +1,5 @@
 import os
-from typing import ClassVar
-from pydantic import (
-    AnyHttpUrl,
-    Field,
-    BaseModel
-)
+from pydantic import Field, BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,21 +10,10 @@ class ServiceConnParams(BaseModel):
 
 
 class Settings(BaseSettings):
-    SERVER_NAME: str = Field(
-        default='development',
-        json_schema_extra={'env': 'SERVER_NAME'}
-    )
-    SERVER_HOST: AnyHttpUrl = "http://0.0.0.0"
     PROJECT_NAME: str = 'Fast Api Project'
-
-    TIMEZONE: str = Field(
-        default='Asia/Bishkek',
-        json_schema_extra={'env': 'TIMEZONE'}
-    )
     COUNT_PER_PAGE_DEFAULT: int = 10
-
     JWT_SECRET_KEY: str = Field(
-        default='a94f6b2d7e183c5a9c12e847d93056ef4b82d7c1f0a3658e5f1b3c29d6a7e',
+        default='a94f6b2d7e183c5a9c12e847d9',
         json_schema_extra={'env': 'SECRET_KEY'}
     )
     ALGORITHM: str = 'HS256'
@@ -41,20 +25,6 @@ class Settings(BaseSettings):
         default=1440,
         json_schema_extra={'env': 'REFRESH_TOKEN_EXPIRE_MINUTES'}
     )
-
-    DATE_INPUT_FORMAT: ClassVar[str] = "%Y-%m-%d"
-    DATETIME_INPUT_FORMAT: ClassVar[str] = "%Y-%m-%dT%H:%M:%S%z"
-
-    DATETIME_EXPORT_FORMAT: str = Field(
-        default='%Y-%m-%dT%H:%M:%S%z',
-        json_schema_extra={'env': 'DATETIME_EXPORT_FORMAT'}
-    )
-
-    TESTING: bool = Field(
-        default=False,
-        json_schema_extra={'env': 'TESTING'}
-    )
-
     # DATABASE CONNECTION PARAMS
     CONNECTION_POOL: int = Field(
         default=5, json_schema_extra={'env': 'CONNECTION_POOL'}
@@ -67,7 +37,6 @@ class Settings(BaseSettings):
         default=3600,
         json_schema_extra={'env': 'POOL_RECYCLE'}
     )
-
     POSTGRES_HOST: str = Field(..., json_schema_extra={'env': 'POSTGRES_HOST'})
     POSTGRES_PORT: int = Field(..., json_schema_extra={'env': 'POSTGRES_PORT'})
     DATABASE_NAME: str = Field(..., json_schema_extra={'env': 'DATABASE_NAME'})

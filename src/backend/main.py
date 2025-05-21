@@ -34,7 +34,7 @@ def custom_openapi(app: FastAPI):
 
 def get_app():
     app = FastAPI(
-        title="Fast Api Project",
+        title=settings.PROJECT_NAME,
         description="This is a backend server",
         version="1.0.0",
     )
