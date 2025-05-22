@@ -3,7 +3,6 @@ name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["borsh130894 <borsh130894@gmail.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"

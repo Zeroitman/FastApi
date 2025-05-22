@@ -1,10 +1,36 @@
 # FastAPI Backend
 
-**[FastAPI-Project](https://github.com/Zeroitman/FastApi)**
+# About project (EN)
+Demonstration FastAPI project that implements
+1. Automatic project startup with all services with 3 commands:
+   - `cd {project_folder}` — go to the project folder
+   - `cp .env.sample .env` — copy environment variables
+   - `docker-compose up` — run a multi-container application
+2. Automatic documentation of API methods in OpenAPI 3.0 format
+3. Method for user registration with validations
+4. Authentication via JWT with methods for obtaining access_token and refresh_token
+5. Method for obtaining full user information
+5. Method for updating user information
+6. Method for deleting a user
+7. Method for obtaining a list of banners from another service **[DRF-Project](https://github.com/Zeroitman/DRF)** with pagination and checking rights to communicate microservices
+8. All functionality is covered tests
 
-Demonstration FastAPI project. 
+# О проекте (RU)
+Демонстрационный FastAPI проект в котором реализовано 
+1. Автоматическое поднятие проекта со всеми сервисами 3 командами:
+   - `cd {project_folder}` — зайдите в папку проекта
+   - `cp .env.sample .env` — скопируйте переменные окружения
+   - `docker-compose up` — запустите мультиконтейнерное приложение
+2. Automatic documentation of API methods in OpenAPI 3.0 format
+3. Метод для регистрации пользователя с валидациями
+4. Аутентификации через JWT с методами для получения access_token и refresh_token
+5. Метод для получения полной информации о пользователе
+6. Метод для обновления информации о пользователе
+7. Метод для удаления пользователя
+8. Метод для получения списка баннеров с другого сервиса **[DRF-Project](https://github.com/Zeroitman/DRF)** с пагинацией и проверкой прав на коммуникацию микросервисов
+9. Весь функционал покрыт тестами
 
-The service uses the following technologies:
+# The service uses the following technologies:
 
 - `Python 3.10`
 - `FastApi 0.115`
