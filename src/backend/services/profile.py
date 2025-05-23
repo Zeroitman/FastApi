@@ -8,6 +8,7 @@ from backend.authentication import verify_password
 from backend.config import settings
 from backend.db.models import Profile
 from backend.db.schemas.profile import ProfileRegister
+from backend.redis.client import RedisClient
 from .base import ServiceBase
 
 
@@ -60,7 +61,21 @@ class ProfileService(ServiceBase):
             return None
         return user
 
-    async def get_access_refresh_token(self, user: Profile):
+    @staticmethod
+    def update_refresh_token(
+            redis: RedisClient,
+            ttl: int,
+            token_uuid: str,
+            user
+    ):
+        redis.delete_refresh_token(str(user.id))
+        redis.place_refresh_token(str(user.id), ttl, token_uuid)
+
+    @staticmethod
+    def current_refresh_token(user_id: int, redis: RedisClient):
+        return redis.get_refresh_token(str(user_id))
+
+    async def get_access_refresh_token(self, user: Profile, red: RedisClient):
         access_token_expires = timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
@@ -77,6 +92,12 @@ class ProfileService(ServiceBase):
             data={"sub": user.phone, "type": "refresh"},
             expires_delta=refresh_token_expires,
             type='refresh',
+        )
+        self.update_refresh_token(
+            red,
+            settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+            code,
+            user
         )
         return {"access": access_token, "refresh": refresh_token}
 

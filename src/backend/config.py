@@ -1,5 +1,8 @@
 import os
-from pydantic import Field, BaseModel
+import redis
+from typing import Optional, Any
+from pydantic import Field, BaseModel, field_validator
+from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -44,6 +47,20 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = Field(
         ..., json_schema_extra={'env': 'POSTGRES_PASSWORD'}
     )
+
+    REDIS_HOST: str = Field(env='REDIS_HOST', default='fa-redis')
+    REDIS_PORT: int = Field(env='REDIS_PORT', default=6379)
+    REDIS_DB: int = Field(env='REDIS_DB', default=0)
+    REDIS_POOL: Any = None
+
+    @field_validator("REDIS_POOL", mode='before')
+    def create_redis_pool(cls, v: Optional[Any], values: FieldValidationInfo):
+        return redis.ConnectionPool(
+            host=values.data.get('REDIS_HOST'),
+            port=values.data.get('REDIS_PORT'),
+            db=values.data.get('REDIS_DB'),
+            decode_responses=True
+        )
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),

@@ -4,8 +4,11 @@ from starlette import status
 from backend import services
 from backend.db.database import get_db
 from backend.db.schemas.profile import ProfileRegister
-from backend.db.schemas.token import Token, OAuth2PasswordRequestData
-from backend.authentication import hashed_password
+from backend.db.schemas.token import (
+    Token, TokenData, OAuth2PasswordRequestData
+)
+from backend.authentication import hashed_password, check_refresh_token
+from backend.redis.client import RedisClient, get_redis
 
 auth_routes = APIRouter()
 
@@ -62,6 +65,7 @@ async def register(
 async def access_token(
         auth_data: OAuth2PasswordRequestData = Depends(),
         db: Session = Depends(get_db),
+        red: RedisClient = Depends(get_redis)
 ):
     user = await services.profile.authenticate_user(
         db, auth_data.phone, auth_data.password
@@ -72,4 +76,18 @@ async def access_token(
             detail="You were not authorized!",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return await services.profile.get_access_refresh_token(user)
+    return await services.profile.get_access_refresh_token(user, red)
+
+
+@auth_routes.post(
+    "/refresh/",
+    response_model=Token,
+    response_description='returns pair of access and refresh token'
+)
+async def refresh_token(
+        auth_data: TokenData = Depends(),
+        db: Session = Depends(get_db),
+        red: RedisClient = Depends(get_redis)
+):
+    user = await check_refresh_token(auth_data.refresh, db, red)
+    return await services.profile.get_access_refresh_token(user, red)

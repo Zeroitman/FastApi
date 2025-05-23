@@ -8,6 +8,7 @@ from backend import services
 from backend.config import settings
 from backend.db.database import get_db
 from backend.db.schemas.token import TokenType
+from backend.redis.client import RedisClient
 
 
 async def generate_token(
@@ -46,10 +47,19 @@ async def check_access_token(
     return await check_token('access', token, db)
 
 
+async def check_refresh_token(
+        token: str,
+        db: AsyncSession,
+        redis: RedisClient
+):
+    return await check_token('refresh', token, db, redis)
+
+
 async def check_token(
         token_type_required: Literal[TokenType.access, TokenType.refresh],
         token: str,
-        db: AsyncSession
+        db: AsyncSession,
+        redis: RedisClient,
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -74,11 +84,15 @@ async def check_token(
         if now > expire:
             raise credentials_exception
 
+        uuid: str = payload.get("uuid")
     except jwt.PyJWTError:
         raise credentials_exception
 
     user = await services.profile.get_by_phone(db, phone=phone)
     if user is None:
+        raise credentials_exception
+    if received_type == TokenType.refresh and \
+            services.profile.current_refresh_token(user.id, redis) != uuid:
         raise credentials_exception
 
     return user

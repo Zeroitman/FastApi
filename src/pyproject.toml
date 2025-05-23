@@ -17,6 +17,7 @@ passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 pydantic = {extras = ["email"], version = "^2.10.6"}
 pyjwt = "^2.10.1"
 requests = "^2.32.3"
+redis = "^6.1.0"
 
 [tool.poetry.plugins."backend.modules"]
 api = "backend.views.router"

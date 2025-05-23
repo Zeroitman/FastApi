@@ -9,6 +9,22 @@ class Token(BaseModel):
     refresh: Optional[str]
 
 
+class TokenData:
+    def __init__(
+        self,
+        access: Optional[str] = Body(
+            None,
+            media_type="application/json"
+        ),
+        refresh: Optional[str] = Body(
+            None,
+            media_type="application/json"
+        ),
+    ):
+        self.access = access
+        self.refresh = refresh
+
+
 class OAuth2PasswordRequestData:
     def __init__(
         self,
