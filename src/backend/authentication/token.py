@@ -8,7 +8,7 @@ from backend import services
 from backend.config import settings
 from backend.db.database import get_db
 from backend.db.schemas.token import TokenType
-from backend.redis.client import RedisClient
+from backend.redis.client import RedisClient, get_redis
 
 
 async def generate_token(
@@ -41,10 +41,11 @@ async def check_access_token(
             description="header for providing access token "
                         "in the format 'bearer {token}'"
         ),
-        db: AsyncSession = Depends(get_db)
+        db: AsyncSession = Depends(get_db),
+        redis: RedisClient = Depends(get_redis),
 ):
     token = token.lstrip('bearer').strip()
-    return await check_token('access', token, db)
+    return await check_token('access', token, db, redis)
 
 
 async def check_refresh_token(

@@ -1,6 +1,6 @@
 # FastAPI Backend
 
-# About project (EN)
+# About the project (EN)
 Demonstration FastAPI project that implements
 1. Automatic project startup with all services with 3 commands:
    - `cd {project_folder}` — go to the project folder
@@ -12,7 +12,7 @@ Demonstration FastAPI project that implements
 5. Method for obtaining full user information
 5. Method for updating user information
 6. Method for deleting a user
-7. Method for obtaining a list of banners from another service **[DRF-Project](https://github.com/Zeroitman/DRF)** with pagination and checking rights to communicate microservices
+7. Method for obtaining a list of active banners from another service **[DRF-Project](https://github.com/Zeroitman/DRF)** with pagination and checking rights to communicate microservices
 8. All functionality is covered tests
 
 # О проекте (RU)
@@ -21,13 +21,13 @@ Demonstration FastAPI project that implements
    - `cd {project_folder}` — зайдите в папку проекта
    - `cp .env.sample .env` — скопируйте переменные окружения
    - `docker-compose up` — запустите мультиконтейнерное приложение
-2. Automatic documentation of API methods in OpenAPI 3.0 format
+2. Автоматическая документация АПИ методов в формате OpenAPI 3.0
 3. Метод для регистрации пользователя с валидациями
 4. Аутентификации через JWT с методами для получения access_token и refresh_token
 5. Метод для получения полной информации о пользователе
 6. Метод для обновления информации о пользователе
 7. Метод для удаления пользователя
-8. Метод для получения списка баннеров с другого сервиса **[DRF-Project](https://github.com/Zeroitman/DRF)** с пагинацией и проверкой прав на коммуникацию микросервисов
+8. Метод для получения списка действующих баннеров с другого сервиса **[DRF-Project](https://github.com/Zeroitman/DRF)** с пагинацией и проверкой прав на коммуникацию микросервисов
 9. Весь функционал покрыт тестами
 
 # The service uses the following technologies:
@@ -37,6 +37,8 @@ Demonstration FastAPI project that implements
 - `PostreSQL 13.3`
 - `Docker`
 - `Poetry`
+- `Redis`
+- `Pytest`
 
 ## Local Development
 
@@ -48,6 +50,17 @@ In order to deploy the project for local development, one should:
 cd {project_folder}
 cp .env.sample .env
 docker-compose up
+```
+
+## How to run tests
+
+When docker container is running, one must enter container
+```
+docker exec -it fast-api-project bash
+```
+and execute the command for testing
+```
+pytest
 ```
 
 ### Migrate 
@@ -78,17 +91,6 @@ Run all migrations at all modules ahead
 $ poetry run alembic upgrade heads
 ```
 
-### How to run tests
-Tests are run either from virtual environment or from docker container by following commands:
-```bash
-$ poetry run pytest # Run all tests
-$ poetry run pytest --cov=user_backend # Run tests with coverage
-$ poetry run pytest --cov=user_backend/ --cov-report=html # Run tests wtith coverage into local html file
-$ poetry run pytest -k TestEditProfileView # Run specific testcase
-$ poetry run pytest -k test_edit_profile_success # Run specific test
-```
-
-
 ## List of environment variables
 | Key                          | Description                                                                                                                                  | Default value               |
 |:-----------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------|
@@ -104,4 +106,7 @@ $ poetry run pytest -k test_edit_profile_success # Run specific test
 | SECRET_KEY                   | secret string that the server uses to sign the JWT                                                                                           | a94f6b2d7e183c5a9c12e847d9  |
 | ACCESS_TOKEN_EXPIRE_MINUTES  | access token expiration date                                                                                                                 | 30                          |
 | REFRESH_TOKEN_EXPIRE_MINUTES | refresh token expiration date                                                                                                                | 1440                        |
+| REDIS_HOST                   | redis server address, for containers - name of container                                                                                     | fa-redis                    |
+| REDIS_PORT                   | redis port                                                                                                                                   | 6379                        |
+| REDIS_DB                     | redis logical base number                                                                                                                    | 0                           |
  
